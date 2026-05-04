@@ -15,8 +15,8 @@ export interface SiteConfig {
 
 export const siteConfig: SiteConfig = {
   name: "Joey's",
-  tagline: 'Professional restaurant in Brisbane, Australia',
-  description: "Joey's - restaurant in Brisbane, Australia. Rated 4.4/5 with 2479 reviews.",
+  tagline: "Clifftop Brisbane dining with breakfast, seafood, pizza, pasta and cocktails",
+  description: "Joey's menu, hours, phone, address and booking details based on public restaurant data.",
   email: 'contact@joey-s.com',
   domain: 'joey-s.webjuice.fengtalk.ai',
   fromName: "Joey's",
