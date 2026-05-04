@@ -14,12 +14,12 @@ export interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: 'Joey's',
+  name: "Joey's",
   tagline: 'Professional restaurant in Brisbane, Australia',
-  description: 'Joey's - restaurant in Brisbane, Australia. Rated 4.4/5 with 2479 reviews.',
+  description: "Joey's - restaurant in Brisbane, Australia. Rated 4.4/5 with 2479 reviews.",
   email: 'contact@joey-s.com',
   domain: 'joey-s.webjuice.fengtalk.ai',
-  fromName: 'Joey's',
+  fromName: "Joey's",
   address: '29 River Terrace, Kangaroo Point QLD 4169, Australia',
   phone: '(07) 3185 2945',
   rating: 4.4,
@@ -30,6 +30,6 @@ export const siteConfig: SiteConfig = {
     { label: 'Contact', href: '/contact' },
   ],
   footer: {
-    text: 'Joey's - 29 River Terrace',
+    text: "Joey's - 29 River Terrace",
   },
 };
