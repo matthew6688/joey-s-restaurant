@@ -1,26 +1,397 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { restaurantData as d } from '../data/restaurant';
-const tel = d.phone ? 'tel:' + d.phone.replace(/[^+0-9]/g, '') : undefined;
-const mail = d.email ? 'mailto:' + d.email : undefined;
-const featured = d.sections.flatMap((s) => s.items.slice(0, 2)).slice(0, 6);
+import {
+  firstImage,
+  loadRestaurantContent,
+  loadRestaurantDesign,
+  paletteVars,
+  supportingImages,
+} from '../lib/restaurantArtifacts';
+
+const content = loadRestaurantContent();
+const design = loadRestaurantDesign();
+const styles = paletteVars(design);
+const heroImage = firstImage(content);
+const supportImages = supportingImages(content);
+const sections = content.menu?.sections || [];
+const featuredItems = sections.flatMap((section: any) => section.items || []).slice(0, 6);
+const hasMenu = sections.length > 0;
+const logo = content.brand?.logo || '';
 ---
-<Layout title={(` ` + d.name).trim()} description={d.cuisine}>
-  <div style={'--bg:'+d.brand.bg+';--paper:'+d.brand.paper+';--ink:'+d.brand.ink+';--muted:'+d.brand.muted+';--accent:'+d.brand.accent+';--accent2:'+d.brand.accent2} class="-mx-6 -mt-12 min-h-screen bg-[var(--paper)] text-[var(--ink)] md:rounded-b-[2rem]">
-    <section class="grid gap-8 p-5 md:p-10 lg:min-h-[82vh] lg:grid-cols-[1fr_0.9fr] lg:items-center">
-      <div class="order-2 lg:order-1">
-        <div class="mb-5 inline-flex rounded-full border border-black/10 bg-white/55 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-[var(--accent)]">Google Places + official menu</div>
-        <img src={d.logoImage} alt={d.name + ' logo'} class:list={["mb-6 max-h-24 max-w-[260px] object-contain", d.brand.logoInvert && "rounded-xl bg-[var(--bg)] p-4"]} />
-        <h1 class="max-w-3xl text-5xl font-black leading-[0.9] tracking-tight md:text-7xl">{d.name}</h1>
-        <p class="mt-5 max-w-2xl text-lg leading-8 text-[var(--muted)] md:text-xl">{d.cuisine}</p>
-        <div class="mt-7 flex flex-wrap gap-3"><a href="/menu" class="rounded-full bg-[var(--bg)] px-6 py-3 text-sm font-black text-white">Menu</a><a href={d.bookingUrl} target="_blank" class="rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-black text-white">Reserve</a>{tel && <a href={tel} class="rounded-full border border-black/15 px-6 py-3 text-sm font-black">Call</a>}<a href={d.googleMapsUrl} target="_blank" class="rounded-full border border-black/15 px-6 py-3 text-sm font-black">Navigate</a></div>
-        
+
+<Layout title={content.hero.name + ' Menu & Dining'} description={content.hero.tagline} brandName={content.hero.name}>
+  <section class="restaurant-shell" style={styles}>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        {logo && (
+          <div class="brand-logo-lockup">
+            <img src={logo} alt={`${content.hero.name} logo`} class="brand-logo" />
+          </div>
+        )}
+        <p class="source-pill">Verified menu preview</p>
+        <h1>{content.hero.name}</h1>
+        <p class="tagline">{content.hero.tagline}</p>
+        <div class="actions">
+          {hasMenu && <a href="/menu" class="button button-primary">View menu</a>}
+          {content.cta.reserveUrl && <a href={content.cta.reserveUrl} class="button button-accent">Reserve</a>}
+          {content.cta.callUrl && <a href={content.cta.callUrl} class="button button-light">Call</a>}
+          {content.cta.mapUrl && <a href={content.cta.mapUrl} class="button button-light">Navigate</a>}
+        </div>
       </div>
-      <div class="order-1 grid h-[520px] grid-cols-6 grid-rows-6 gap-3 lg:order-2">
-        <img src={d.heroImage} alt={d.name + ' hero'} class="col-span-6 row-span-4 h-full w-full rounded-[2rem] object-cover shadow-2xl" />{d.galleryImages.slice(0,3).map((img) => <img src={img} alt={d.name + ' photo'} class="col-span-2 row-span-2 h-full w-full rounded-2xl object-cover shadow-lg" />)}
+
+      <div class="image-board" aria-label={`${content.hero.name} gallery`}>
+        <figure class="hero-frame">
+          {heroImage
+            ? <img src={heroImage} alt={`${content.hero.name} food or venue`} class="hero-photo" />
+            : <div class="image-placeholder">Photo pending</div>}
+          <figcaption>
+            <span>{content.hero.rating ? `${content.hero.rating}/5` : 'Verified'}</span>
+            <small>{content.hero.reviewCount ? `${content.hero.reviewCount} Google reviews` : 'Google Places evidence'}</small>
+          </figcaption>
+        </figure>
+        <div class="image-row" aria-label="Venue photos">
+          {supportImages.map((image: string) => (
+            <img src={image} alt={`${content.hero.name} gallery image`} />
+          ))}
+        </div>
       </div>
-    </section>
-    <section class="grid gap-4 px-5 pb-10 md:grid-cols-4 md:px-10"><a href={d.googleMapsUrl} target="_blank" class="rounded-2xl bg-white/65 p-5 shadow-sm"><span class="block text-xs font-black uppercase tracking-widest text-[var(--accent)]">Address</span><strong class="mt-2 block">{d.address}</strong></a><a href={tel} class="rounded-2xl bg-white/65 p-5 shadow-sm"><span class="block text-xs font-black uppercase tracking-widest text-[var(--accent)]">Phone</span><strong class="mt-2 block">{d.phone}</strong></a>{mail ? <a href={mail} class="rounded-2xl bg-white/65 p-5 shadow-sm"><span class="block text-xs font-black uppercase tracking-widest text-[var(--accent)]">Email</span><strong class="mt-2 block break-all">{d.email}</strong></a> : <a href={d.website} target="_blank" class="rounded-2xl bg-white/65 p-5 shadow-sm"><span class="block text-xs font-black uppercase tracking-widest text-[var(--accent)]">Website</span><strong class="mt-2 block">Official site</strong></a>}<div class="rounded-2xl bg-white/65 p-5 shadow-sm"><span class="block text-xs font-black uppercase tracking-widest text-[var(--accent)]">Rating</span><strong class="mt-2 block">{d.rating}/5 · {d.reviewCount} reviews</strong></div></section><section class="p-5 md:p-10"><h2 class="text-4xl font-black">Real menu highlights</h2><div class="mt-6 grid gap-4 md:grid-cols-3">{featured.map((item) => <article class="rounded-2xl bg-white p-5 shadow-sm"><div class="flex justify-between gap-4"><h3 class="text-lg font-black">{item.name}</h3><span class="font-black text-[var(--accent)]">{item.price}</span></div><p class="mt-3 text-stone-600">{item.description}</p></article>)}</div></section>
-    <div class="fixed inset-x-3 bottom-3 z-50 flex gap-2 rounded-full bg-[var(--bg)] p-2 shadow-2xl md:hidden"><a href={tel} class="flex-1 rounded-full bg-white px-4 py-3 text-center text-sm font-black text-[var(--ink)]">Call</a><a href={d.bookingUrl} target="_blank" class="flex-1 rounded-full bg-[var(--accent)] px-4 py-3 text-center text-sm font-black text-white">Reserve</a><a href={d.googleMapsUrl} target="_blank" class="flex-1 rounded-full border border-white/20 px-4 py-3 text-center text-sm font-black text-white">Map</a></div>
-  </div>
+    </div>
+
+    <div class="fact-grid" aria-label="Contact facts">
+      <a class="fact-card" href={content.cta.mapUrl || undefined}>
+        <span>Address</span>
+        <strong>{content.contact.address || 'Address pending'}</strong>
+      </a>
+      <a class="fact-card" href={content.cta.callUrl || undefined}>
+        <span>Phone</span>
+        <strong>{content.contact.phone || 'Phone pending'}</strong>
+      </a>
+      <a class="fact-card" href={content.contact.website || undefined}>
+        <span>Website</span>
+        <strong>{content.contact.website ? 'Official site' : 'Website pending'}</strong>
+      </a>
+      <div class="fact-card">
+        <span>Rating</span>
+        <strong>{content.hero.rating ? `${content.hero.rating}/5 · ${content.hero.reviewCount} reviews` : 'Rating pending'}</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="menu-preview" style={styles}>
+    <div class="section-heading">
+      <div>
+        <p>Menu edit</p>
+        <h2>Highlights from the official menu</h2>
+      </div>
+      {hasMenu && <a href="/menu">Full menu</a>}
+    </div>
+    <div class="menu-grid">
+      {featuredItems.map((item: any) => (
+        <article class="menu-card">
+          <div>
+            <h3>{item.name}</h3>
+            {item.description && <p>{item.description}</p>}
+          </div>
+          {item.price && <strong>{item.price}</strong>}
+        </article>
+      ))}
+      {!featuredItems.length && (
+        <article class="menu-card menu-card-empty">
+          <h3>Menu artifact required</h3>
+          <p>Add content.restaurant.json with menu.sections before sending this preview.</p>
+        </article>
+      )}
+    </div>
+  </section>
 </Layout>
+
+<style>
+  .restaurant-shell {
+    overflow: hidden;
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--wj-bg), white 10%), var(--wj-bg) 58%),
+      var(--wj-bg);
+    color: var(--wj-ink);
+    border-radius: 8px;
+    padding: clamp(1rem, 3vw, 2rem);
+  }
+
+  .hero-grid {
+    display: grid;
+    gap: clamp(1.2rem, 4vw, 3.5rem);
+    align-items: stretch;
+  }
+
+  .source-pill {
+    display: inline-flex;
+    margin-top: clamp(1rem, 3vw, 2.5rem);
+    border-bottom: 1px solid color-mix(in srgb, var(--wj-accent), white 25%);
+    padding-bottom: 0.35rem;
+    color: var(--wj-accent);
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .brand-logo {
+    display: block;
+    width: min(260px, 64vw);
+    max-height: 84px;
+    object-fit: contain;
+    object-position: left center;
+  }
+
+  .brand-logo-lockup {
+    display: inline-flex;
+    max-width: 100%;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    background: color-mix(in srgb, var(--wj-ink), black 8%);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.12);
+  }
+
+  h1 {
+    max-width: 720px;
+    margin-top: 1.15rem;
+    font-size: clamp(3.45rem, 10vw, 7.4rem);
+    line-height: 0.86;
+    font-weight: 900;
+    letter-spacing: 0;
+  }
+
+  .tagline {
+    max-width: 620px;
+    margin-top: 1.25rem;
+    color: color-mix(in srgb, var(--wj-muted), var(--wj-ink) 12%);
+    font-size: 1.2rem;
+    line-height: 1.65;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 2.2rem;
+  }
+
+  .button {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 0.75rem 1.3rem;
+    font-weight: 900;
+    text-decoration: none;
+  }
+
+  .button-primary {
+    background: var(--wj-ink);
+    color: var(--wj-surface);
+  }
+
+  .button-accent {
+    background: var(--wj-accent);
+    color: white;
+  }
+
+  .button-light {
+    border: 1px solid color-mix(in srgb, var(--wj-muted), white 58%);
+    color: var(--wj-ink);
+    background: color-mix(in srgb, var(--wj-surface), transparent 16%);
+  }
+
+  .image-board {
+    display: grid;
+    gap: 0.85rem;
+    align-content: stretch;
+  }
+
+  .hero-frame {
+    position: relative;
+    min-height: 460px;
+  }
+
+  .hero-photo,
+  .image-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 460px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .hero-frame figcaption {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    display: grid;
+    gap: 0.1rem;
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    border-radius: 8px;
+    padding: 0.75rem 0.9rem;
+    background: rgba(11, 9, 7, 0.72);
+    color: white;
+    backdrop-filter: blur(14px);
+  }
+
+  .hero-frame span {
+    font-size: 1.2rem;
+    font-weight: 950;
+  }
+
+  .hero-frame small {
+    font-size: 0.72rem;
+    font-weight: 750;
+    opacity: 0.78;
+  }
+
+  .image-placeholder {
+    display: grid;
+    place-items: center;
+    background: color-mix(in srgb, var(--wj-muted), white 65%);
+    color: var(--wj-ink);
+    font-weight: 800;
+  }
+
+  .image-row {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+  }
+
+  .image-row img {
+    width: calc((100% - 1.8rem) / 3);
+    aspect-ratio: 1;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.14);
+  }
+
+  .fact-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  .fact-card {
+    display: grid;
+    gap: 0.55rem;
+    min-height: 118px;
+    border-top: 1px solid color-mix(in srgb, var(--wj-muted), white 40%);
+    border-radius: 8px;
+    padding: 1.1rem 0;
+    background: transparent;
+    color: var(--wj-ink);
+    text-decoration: none;
+  }
+
+  .fact-card span,
+  .section-heading p {
+    color: var(--wj-accent);
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .fact-card strong {
+    font-size: 1.05rem;
+    line-height: 1.45;
+  }
+
+  .menu-preview {
+    padding: clamp(3rem, 7vw, 5.5rem) 0;
+  }
+
+  .section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2.25rem;
+  }
+
+  .section-heading h2 {
+    margin-top: 0.35rem;
+    max-width: 680px;
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    line-height: 0.98;
+    font-weight: 900;
+    letter-spacing: 0;
+  }
+
+  .section-heading a {
+    color: var(--wj-ink);
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .menu-grid {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid #ded8cf;
+  }
+
+  .menu-card {
+    display: flex;
+    min-height: 168px;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid #ded8cf;
+    padding: 1.25rem 0;
+    background: transparent;
+  }
+
+  .menu-card h3 {
+    font-size: 1.22rem;
+    font-weight: 900;
+    line-height: 1.35;
+  }
+
+  .menu-card p {
+    margin-top: 0.8rem;
+    color: #675c52;
+    line-height: 1.55;
+  }
+
+  .menu-card strong {
+    color: var(--wj-accent);
+    font-weight: 900;
+    white-space: nowrap;
+  }
+
+  .menu-card-empty {
+    display: block;
+  }
+
+  @media (min-width: 820px) {
+    .hero-grid {
+      grid-template-columns: 1fr 0.86fr;
+    }
+
+    .fact-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .menu-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0 1.4rem;
+    }
+
+  }
+
+  @media (max-width: 819px) {
+    .hero-copy {
+      padding: 0.25rem;
+    }
+
+    .hero-frame,
+    .hero-photo,
+    .image-placeholder {
+      min-height: 360px;
+    }
+  }
+</style>
