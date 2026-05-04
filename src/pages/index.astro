@@ -1,58 +1,67 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { siteConfig } from '../config/site';
+import { restaurantData } from '../data/restaurant';
 
-const name = siteConfig.name;
-const cuisine = name.includes('Opa') ? 'Greek mezze and riverside dining'
-  : name.includes('Babylon') ? 'Middle Eastern dining by the river'
-  : name.includes('Longwang') ? 'Modern Asian dining in Brisbane City'
-  : name.includes('Chu') ? 'Vibrant Asian street food and cocktails'
-  : name.includes('Joey') ? 'Modern riverside dining in Kangaroo Point'
-  : 'Seasonal dining and local hospitality';
-const menu = name.includes('Opa') ? [['Mezze Plates', 'Tzatziki, warm pita, olives, saganaki, calamari'], ['From the Grill', 'Lamb shoulder, chicken souvlaki, market seafood'], ['To Share', 'Greek salads, roasted vegetables, lemon potatoes']]
-  : name.includes('Babylon') ? [['Mezze', 'Hummus, labneh, pickles, warm bread, fried cauliflower'], ['Charcoal Grill', 'Skewers, spiced chicken, lamb, market seafood'], ['Banquet Style', 'Shared plates for groups, cocktails and desserts']]
-  : name.includes('Longwang') ? [['Signature Bites', 'Dumplings, bao, crispy starters, seasonal greens'], ['Wok & Grill', 'Noodles, rice, seafood, beef and chicken mains'], ['Banquet Menu', 'Shared dishes designed for groups and celebrations']]
-  : name.includes('Chu') ? [['Street Snacks', 'Bao, dumplings, fried chicken, fresh salads'], ['Big Plates', 'Curries, noodles, rice, seafood and grilled meats'], ['Drinks', 'Cocktails, wine, beer and non-alcoholic options']]
-  : [['Breakfast & Brunch', 'Fresh plates, eggs, toast, bowls and coffee'], ['Lunch & Dinner', 'Seafood, salads, burgers, pasta and shared plates'], ['Drinks', 'Cocktails, wine, beer, coffee and spritzes']];
 const phoneHref = siteConfig.phone ? 'tel:' + siteConfig.phone.replace(/[^+0-9]/g, '') : '/contact';
+const featuredItems = restaurantData.sections.flatMap((section) => section.items.slice(0, 2)).slice(0, 6);
 ---
 
-<Layout title={name + ' Menu & Dining'} description={siteConfig.description}>
-  <section class="grid gap-10 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-    <div>
-      <p class="mb-3 text-sm font-semibold uppercase tracking-wide text-amber-700">Brisbane Restaurant</p>
-      <h1 class="max-w-3xl text-4xl font-bold leading-tight text-stone-950 md:text-6xl">{name}</h1>
-      <p class="mt-5 max-w-2xl text-lg leading-8 text-stone-700">{cuisine}. Browse the preview menu, check the location, and call the restaurant directly.</p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        <a href="/menu" class="rounded-md bg-stone-950 px-5 py-3 text-sm font-semibold text-white hover:bg-stone-800">View menu</a>
-        <a href={phoneHref} class="rounded-md border border-stone-300 px-5 py-3 text-sm font-semibold text-stone-950 hover:bg-stone-100">Call restaurant</a>
-      </div>
-      <div class="mt-8 grid gap-3 text-sm text-stone-700 sm:grid-cols-3">
-        <div class="border-l-2 border-amber-500 pl-3"><span class="block font-semibold text-stone-950">Rating</span>{siteConfig.rating ? siteConfig.rating + '/5 from ' + siteConfig.review_count + ' reviews' : 'Local favourite'}</div>
-        <div class="border-l-2 border-amber-500 pl-3"><span class="block font-semibold text-stone-950">Address</span>{siteConfig.address || 'Brisbane, Australia'}</div>
-        <div class="border-l-2 border-amber-500 pl-3"><span class="block font-semibold text-stone-950">Phone</span>{siteConfig.phone || 'Call for bookings'}</div>
-      </div>
-    </div>
-    <div class="min-h-[420px] overflow-hidden rounded-md bg-[url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80')] bg-cover bg-center shadow-sm">
-      <div class="flex h-full min-h-[420px] items-end bg-gradient-to-t from-black/65 via-black/10 to-transparent p-8">
-        <div class="text-white">
-          <p class="text-sm font-semibold uppercase tracking-wide text-amber-200">Open for dining</p>
-          <p class="mt-2 max-w-sm text-2xl font-semibold">A cleaner preview site built around the restaurant, not a generic business shell.</p>
+<Layout title={siteConfig.name + ' | Menu, Hours & Bookings'} description={siteConfig.description}>
+  <section class="relative -mx-6 -mt-12 overflow-hidden bg-stone-950 text-white md:rounded-b-[2rem]">
+    <div class="absolute inset-0 bg-cover bg-center opacity-45" style={'background-image: url(' + restaurantData.heroImage + ')'}></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(245,158,11,.35),transparent_28%),linear-gradient(90deg,rgba(12,10,9,.96),rgba(12,10,9,.72),rgba(12,10,9,.35))]"></div>
+    <div class="relative grid min-h-[680px] gap-10 px-6 py-16 md:px-12 lg:grid-cols-[1fr_420px] lg:items-end">
+      <div class="max-w-3xl self-center">
+        <p class="mb-4 text-sm font-semibold uppercase tracking-[0.22em] text-amber-300">Source-backed restaurant preview</p>
+        <h1 class="text-5xl font-black leading-[0.95] tracking-tight md:text-7xl">{siteConfig.name}</h1>
+        <p class="mt-6 max-w-2xl text-xl leading-8 text-stone-200">{restaurantData.cuisine}</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/menu" class="rounded-full bg-amber-300 px-6 py-3 text-sm font-bold text-stone-950 hover:bg-amber-200">View real menu</a>
+          <a href={phoneHref} class="rounded-full border border-white/35 px-6 py-3 text-sm font-bold text-white hover:bg-white/10">Call {siteConfig.phone}</a>
         </div>
       </div>
+      <aside class="rounded-2xl border border-white/15 bg-white/10 p-6 backdrop-blur-md">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-amber-200">At a glance</p>
+        <div class="mt-5 space-y-5 text-sm text-stone-100">
+          <div><span class="block text-stone-400">Rating</span><strong>{siteConfig.rating ? siteConfig.rating + '/5 from ' + siteConfig.review_count + ' Google reviews' : 'Verified local venue'}</strong></div>
+          <div><span class="block text-stone-400">Address</span><strong>{siteConfig.address}</strong></div>
+          <div><span class="block text-stone-400">Hours</span>{restaurantData.hours.map((hour) => <strong class="block">{hour}</strong>)}</div>
+          <a href={restaurantData.menuSourceUrl} target="_blank" rel="noreferrer" class="inline-flex text-amber-200 underline underline-offset-4">Menu source</a>
+        </div>
+      </aside>
     </div>
   </section>
-  <section class="border-t border-stone-200 py-12">
-    <div class="mb-8 flex items-end justify-between gap-4">
-      <div><p class="text-sm font-semibold uppercase tracking-wide text-amber-700">Menu Preview</p><h2 class="mt-2 text-3xl font-bold text-stone-950">Popular sections</h2></div>
-      <a href="/menu" class="hidden text-sm font-semibold underline underline-offset-4 sm:block">Open full menu</a>
+
+  <section class="py-14">
+    <div class="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+      <div>
+        <p class="text-sm font-bold uppercase tracking-[0.2em] text-amber-700">Menu Highlights</p>
+        <h2 class="mt-2 text-4xl font-black tracking-tight text-stone-950">Pulled from the live menu</h2>
+      </div>
+      <a href="/menu" class="text-sm font-bold underline underline-offset-4">Open full menu page</a>
     </div>
-    <div class="grid gap-5 md:grid-cols-3">
-      {menu.map(([title, copy]) => (<article class="rounded-md border border-stone-200 bg-white p-6 shadow-sm"><h3 class="text-xl font-semibold text-stone-950">{title}</h3><p class="mt-3 leading-7 text-stone-600">{copy}</p></article>))}
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {featuredItems.map((item) => (
+        <article class="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+          <div class="flex items-start justify-between gap-4">
+            <h3 class="text-lg font-black text-stone-950">{item.name}</h3>
+            {item.price && <span class="shrink-0 rounded-full bg-stone-950 px-3 py-1 text-xs font-bold text-white">{item.price}</span>}
+          </div>
+          <p class="mt-3 text-sm leading-6 text-stone-600">{item.description}</p>
+        </article>
+      ))}
     </div>
   </section>
-  <section class="grid gap-8 border-t border-stone-200 py-12 md:grid-cols-[0.8fr_1.2fr]">
-    <div><p class="text-sm font-semibold uppercase tracking-wide text-amber-700">Visit</p><h2 class="mt-2 text-3xl font-bold text-stone-950">Find {name}</h2></div>
-    <div class="space-y-4 text-stone-700"><p><strong class="text-stone-950">Address:</strong> {siteConfig.address || 'Brisbane, Australia'}</p><p><strong class="text-stone-950">Phone:</strong> {siteConfig.phone || 'Call for current bookings'}</p><p><strong class="text-stone-950">Note:</strong> This is a preview website. Replace the sample menu with the restaurant's official menu before sending final outreach.</p></div>
+
+  <section class="grid gap-8 border-t border-stone-200 py-12 md:grid-cols-[0.75fr_1.25fr]">
+    <div>
+      <p class="text-sm font-bold uppercase tracking-[0.2em] text-amber-700">Proof</p>
+      <h2 class="mt-2 text-3xl font-black text-stone-950">Built from real scraped data</h2>
+    </div>
+    <div class="space-y-4 text-stone-700">
+      <p>This page uses the restaurant's public menu/source data, plus the scraped Google business profile details already in the generated site config.</p>
+      <p><strong class="text-stone-950">Source:</strong> <a href={restaurantData.menuSourceUrl} target="_blank" rel="noreferrer" class="underline underline-offset-4">{restaurantData.menuSourceLabel}</a></p>
+    </div>
   </section>
 </Layout>
