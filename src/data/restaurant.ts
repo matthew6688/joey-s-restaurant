@@ -95,7 +95,7 @@ export const restaurantData = {
   "internationalPhone": "+61 7 3185 2945",
   "email": "",
   "website": "https://www.joeys.com.au/",
-  "googleMapsUrl": "https://maps.google.com/?cid=10224569603213736831",
+  "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Joey's%2029%20River%20Terrace%2C%20Kangaroo%20Point%20QLD%204169%2C%20Australia",
   "rating": 4.4,
   "reviewCount": 2479,
   "businessStatus": "OPERATIONAL",
