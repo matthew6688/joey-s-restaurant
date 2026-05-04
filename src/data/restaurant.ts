@@ -1,40 +1,20 @@
-export interface MenuItem {
-  name: string;
-  description: string;
-  price?: string;
-}
-
-export interface MenuSection {
-  title: string;
-  note: string;
-  items: MenuItem[];
-}
-
-export interface RestaurantData {
-  key: string;
-  name: string;
-  cuisine: string;
-  menuSourceLabel: string;
-  menuSourceUrl: string;
-  bookingUrl: string;
-  hours: string[];
-  heroImage: string;
-  sections: MenuSection[];
-}
-
-export const restaurantData: RestaurantData = {
+export const restaurantData = {
   "key": "joeys",
   "name": "Joey's",
   "cuisine": "Clifftop Brisbane dining with breakfast, seafood, pizza, pasta and cocktails",
-  "menuSourceLabel": "Official Joey's menus",
+  "menuSourceLabel": "Official menu PDFs + Google Places",
   "menuSourceUrl": "https://www.joeys.com.au/menus",
   "bookingUrl": "https://www.joeys.com.au/reservations",
   "hours": [
-    "Open daily 6:00am-12:00am",
-    "Breakfast daily",
-    "Lunch and dinner from noon till late"
+    "Monday: 6:00 AM – 9:00 PM",
+    "Tuesday: 6:00 AM – 9:00 PM",
+    "Wednesday: 6:00 AM – 9:00 PM",
+    "Thursday: 6:00 AM – 9:00 PM",
+    "Friday: 6:00 AM – 10:00 PM",
+    "Saturday: 6:00 AM – 10:00 PM",
+    "Sunday: 6:00 AM – 10:00 PM"
   ],
-  "heroImage": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=85",
+  "heroImage": "/images/official-1.jpg",
   "sections": [
     {
       "title": "Breakfast",
@@ -109,5 +89,33 @@ export const restaurantData: RestaurantData = {
         }
       ]
     }
-  ]
+  ],
+  "address": "29 River Terrace, Kangaroo Point QLD 4169, Australia",
+  "phone": "(07) 3185 2945",
+  "internationalPhone": "+61 7 3185 2945",
+  "email": "",
+  "website": "https://www.joeys.com.au/",
+  "googleMapsUrl": "https://maps.google.com/?cid=10224569603213736831",
+  "rating": 4.4,
+  "reviewCount": 2479,
+  "businessStatus": "OPERATIONAL",
+  "location": {
+    "lat": -27.4767908,
+    "lng": 153.0349049
+  },
+  "logoImage": "/images/logo.png",
+  "galleryImages": [
+    "/images/official-2.jpg",
+    "/images/google-1.jpg",
+    "/images/google-2.jpg",
+    "/images/google-3.jpg"
+  ],
+  "brand": {
+    "bg": "#133d4a",
+    "paper": "#f4efe4",
+    "ink": "#0f2d33",
+    "muted": "#597177",
+    "accent": "#e98448",
+    "accent2": "#f1c96d"
+  }
 };
